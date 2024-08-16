@@ -16,6 +16,7 @@ const config: Config = {
         'shareware-green': '#75D32C'
       } as any;
 
+      // These colors are deprecated, and as a result need to be deleted to prevent warnings from appearing.
       delete newColors.lightBlue;
       delete newColors.warmGray;
       delete newColors.trueGray;
