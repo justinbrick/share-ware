@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { confirmAuthorization } from "../auth";
 
+
 export default function Auth() {
     const router = useRouter();
     useEffect(() => {
