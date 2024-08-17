@@ -1,41 +1,70 @@
 import { generateCodeVerifier, OAuth2Client, OAuth2Fetch, OAuth2Token } from "@badgateway/oauth2-client";
 import * as authInfo from "../auth.json";
 
-export const redirectUri = window.location.origin + "/auth";
-
 export const client = new OAuth2Client(authInfo);
+
+
+export const getVerificationCode = () => {
+    const code = localStorage.getItem("code_verifier");
+    if (!code) {
+        throw new Error("No code verifier found in local storage... malicious?");
+    }
+
+    return code;
+}
+
+export function getAuthUri() {
+    return window.location.origin + "/auth";
+}
 
 export async function redirectForAuthorization() {
     const verification = await generateCodeVerifier();
     localStorage.setItem("code_verifier", verification);
     document.location = await client.authorizationCode.getAuthorizeUri({
-        redirectUri: redirectUri,
+        redirectUri: getAuthUri(),
         codeVerifier: verification,
-        scope: [""]
+        scope: ["User.Read", "Sites.Read.All"]
     });
 }
 
 export async function confirmAuthorization() {
-    const verification = localStorage.getItem("code_verifier");
-    if (!verification) {
-        // no bueno...
-        throw new Error("Tried to verify code with no code verifier... malicious?");
-    }
-
+    const verification = getVerificationCode();
     const authorization = await client.authorizationCode.getTokenFromCodeRedirect(document.location.href, {
-        redirectUri: redirectUri,
+        redirectUri: getAuthUri(),
         codeVerifier: verification
     });
 
-    localStorage.removeItem("code_verifier");
-
+    // localStorage.removeItem("code_verifier");
     return authorization;
 }
 
-export const authFetch = new OAuth2Fetch({
-    client: client,
-    getNewToken: async () => {
+let authFetch: OAuth2Fetch | null = null;
 
-        return await client.authorizationCode.
+export function getAuthFetch(): OAuth2Fetch {
+    if (!authFetch) {
+        authFetch = new OAuth2Fetch({
+            client: client,
+            getNewToken: async () => {
+                const verification = getVerificationCode();
+                return await client.authorizationCode.getToken({
+                    code: verification,
+                    redirectUri: getAuthUri(),
+                });
+            },
+            storeToken: (token: OAuth2Token) => {
+                localStorage.setItem("token", JSON.stringify(token));
+            },
+            getStoredToken() {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    return null;
+                }
+
+                return JSON.parse(token);
+            },
+        });
     }
-})
+
+    return authFetch;
+}
+
