@@ -1,10 +1,18 @@
-import { useRouter } from "next/router";
+'use client'
+
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { confirmAuthorization } from "../auth";
 
 export default function Auth() {
-    confirmAuthorization().then(() => {
-        useRouter().push("/", "/");
-    }).catch(e => {
-        console.error(e);
+    const router = useRouter();
+    useEffect(() => {
+        confirmAuthorization().then((token) => {
+            localStorage.setItem("token", JSON.stringify(token));
+            router.push("/");
+        }).catch(e => {
+            console.error(e);
+        });
     });
+
 }
