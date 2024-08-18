@@ -1,4 +1,13 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# What is Share-Ware?
+Share-Ware is an open source project which is primarily designed to allow for easier administrative reporting in SharePoint.
+As of right now, the intended goal is to see which sites are taking the most storage, and easily view which document libraries / lists / files are the largest.
+
+# Security
+If you find a vulnerability, rather than making an issue on the repository, please send an email to justin@justin.directory
+
+# Contribution
+This is a personal project, so it is not open to any third party contributions. However, you are free to fork the repository and make modifications as you see fit.
+If you do decide to fork, however, you must respect the [license.](/LICENSE.txt)
 
 ## Getting Started
 
@@ -14,23 +23,3 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
