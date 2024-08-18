@@ -2,11 +2,25 @@ import * as Graph from "@microsoft/microsoft-graph-types";
 import Image from "next/image";
 
 export interface IProfileBarProps {
+    /**
+     * the user to display in the profile bar
+     */
     user?: Graph.User;
+    /**
+     * the function to call when the user clicks the sign out button
+     */
     signOut?: () => void;
+    /**
+     * the function to call when the user clicks the sign in button
+     */
     signIn?: () => void;
 }
 
+/**
+ * the profile bar component, which displays the user's name and email address, and a sign in/out button
+ * @param props the properties for the profile bar
+ * @returns the profile bar component
+ */
 export default function ProfileBar(props: IProfileBarProps) {
     const { user, signIn, signOut } = props;
     const clickAction = () => {
