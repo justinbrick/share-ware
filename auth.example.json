@@ -1,0 +1,6 @@
+{
+    "server": "https://login.microsoftonline.com/",
+    "clientId": "{CLIENT ID HERE}",
+    "authorizationEndpoint": "/common/oauth2/v2.0/authorize",
+    "tokenEndpoint": "/common/oauth2/v2.0/token"
+}
