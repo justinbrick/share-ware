@@ -1,22 +1,30 @@
 'use client'
 
 import * as Graph from "@microsoft/microsoft-graph-types";
-import { getAuthFetch, redirectForAuthorization } from "./auth";
-
-async function getUserProfile() {
-  const response = await getAuthFetch().fetch("https://graph.microsoft.com/v1.0/me?$select=displayName,userPrincipalName");
-  return response.json() as Pick<Graph.User, "displayName" | "userPrincipalName">;
-}
+import { useEffect, useState } from "react";
+import { getUserProfile, isAuthorized, redirectForAuthorization, signOutUser } from "./auth";
+import ProfileBar from "./profilebar";
 
 export default function Home() {
+  const [user, setUser] = useState<Graph.User>();
+  useEffect(() => {
+    if (isAuthorized()) {
+      getUserProfile().then(profile => {
+        setUser(profile);
+      }).catch(e => {
+        console.error(e);
+      })
+    }
+  }, []);
+
+  const signOut = () => {
+    signOutUser();
+    setUser(undefined);
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center">
-      <button onClick={redirectForAuthorization}>
-        Click me! (Authorize)
-      </button>
-      <button onClick={getUserProfile}>
-        Click me! (Get User Profile)
-      </button>
+    <main className="flex flex-col items-center">
+      <ProfileBar user={user} signIn={redirectForAuthorization} signOut={signOut} />
     </main>
   );
 }

@@ -17,8 +17,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <header className="flex flex-row justify-between p-8 bg-slate-50 shadow-md w-screen">
+      <body className={`${inter.className} min-h-screen`}>
+        <header className="flex flex-row justify-between p-2 bg-slate-50 shadow-md w-screen sticky">
           <div className="flex flex-col items-left">
             <p className="text-3xl">Share-Ware</p>
             <p className="text-sm">by Justin</p>
