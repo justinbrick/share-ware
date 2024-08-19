@@ -90,7 +90,7 @@ export function getAuthFetch(): OAuth2Fetch {
                 }
 
                 return JSON.parse(token);
-            },
+            }
         });
     }
 

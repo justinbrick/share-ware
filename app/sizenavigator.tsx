@@ -9,8 +9,14 @@ export interface ISizeNavigatorProps {
     user?: Graph.User;
 }
 
+export type SiteStatistic = {
+    site: Graph.Site;
+    size: number;
+    totalSize: number;
+}
+
 export default function SizeNavigator(props: ISizeNavigatorProps) {
-    const [sites, setSites] = useState<Graph.Site[]>([]);
+    const [siteStatistics, setSiteStatistics] = useState<SiteStatistic[]>([]);
 
     useEffect(() => {
         if (!props.user) {
@@ -19,8 +25,30 @@ export default function SizeNavigator(props: ISizeNavigatorProps) {
 
         const getSites = async () => {
             const authFetch = getAuthFetch();
-            const sites = await authFetch.fetch("https://graph.microsoft.com/v1.0/sites?search=*");
-            setSites((await sites.json()).value as Graph.Site[]);
+            const response = await authFetch.fetch("https://graph.microsoft.com/v1.0/sites?search=*");
+            const sites = (await response.json()).value as Graph.Site[];
+            const siteStatistics: Pick<SiteStatistic, "site" | "size">[] = [];
+            let totalSize = 0;
+            for (const site of sites) {
+                try {
+                    const response = await authFetch.fetch(`https://graph.microsoft.com/v1.0/sites/${site.id}/drives?$select=quota`);
+                    const drives = (await response.json()).value as Pick<Graph.Drive, "quota">[];
+                    let localSize = 0;
+                    for (const drive of drives) {
+                        totalSize += drive.quota?.used ?? 0;
+                        localSize += drive.quota?.used ?? 0;
+                    }
+                    siteStatistics.push({ site, size: localSize });
+                    setSiteStatistics(
+                        siteStatistics.sort((a, b) => b.size - a.size).map((siteStatistic) => {
+                            return { site: siteStatistic.site, size: siteStatistic.size, totalSize };
+                        })
+                    );
+                } catch (error) {
+                    console.error(`Error while getting drives for ${site.displayName}`, error);
+                }
+
+            }
         };
 
         getSites();
@@ -36,8 +64,13 @@ export default function SizeNavigator(props: ISizeNavigatorProps) {
     }
 
     return (
-        <div className="flex flex-col items-center p-8">
-            {sites.map(site => { return (<h1>{site.displayName}</h1>) })}
+        <div className="flex flex-row min-h-20">
+            <div className="flex flex-col items-center p-8 overflow-y-scroll">
+                {siteStatistics.map((siteStatistic) => (
+                    <h1 key={siteStatistic.site.id}>{siteStatistic.site.displayName} - {siteStatistic.size}</h1>
+                ))
+                }
+            </div>
         </div>
     );
 }
