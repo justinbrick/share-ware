@@ -65,12 +65,15 @@ export default function SizeNavigator(props: ISizeNavigatorProps) {
     }
 
     return (
-        <div className="flex flex-row min-h-20 w-full">
-            <div className="flex flex-col items-center p-4 overflow-y-scroll h-1/2 w-1/4">
+        <div className="flex flex-row min-h-20 max-h-1/2 w-full">
+            <div className="flex flex-col items-center overflow-y-scroll w-1/3 border-gray-300 border-opacity-20 border-4">
                 {siteStatistics.map((siteStatistic) => (
                     <SiteStorageMetric key={siteStatistic.site.id} size={siteStatistic.size} totalSize={siteStatistic.totalSize} siteName={siteStatistic.site.displayName!} className="w-1/2" />
                 ))
                 }
+            </div>
+            <div className="flex-grow bg-slate-100">
+                <p>Stuff goes here!</p>
             </div>
         </div>
     );
