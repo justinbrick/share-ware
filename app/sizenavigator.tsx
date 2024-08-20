@@ -1,6 +1,7 @@
 import * as Graph from "@microsoft/microsoft-graph-types";
 import { useEffect, useState } from "react";
 import { getAuthFetch } from "./auth";
+import SiteStorageMetric from "./siteStorageMetric";
 
 export interface ISizeNavigatorProps {
     /**
@@ -64,10 +65,10 @@ export default function SizeNavigator(props: ISizeNavigatorProps) {
     }
 
     return (
-        <div className="flex flex-row min-h-20">
-            <div className="flex flex-col items-center p-8 overflow-y-scroll">
+        <div className="flex flex-row min-h-20 w-full">
+            <div className="flex flex-col items-center p-4 overflow-y-scroll h-1/2 w-1/4">
                 {siteStatistics.map((siteStatistic) => (
-                    <h1 key={siteStatistic.site.id}>{siteStatistic.site.displayName} - {siteStatistic.size}</h1>
+                    <SiteStorageMetric key={siteStatistic.site.id} size={siteStatistic.size} totalSize={siteStatistic.totalSize} siteName={siteStatistic.site.displayName!} className="w-1/2" />
                 ))
                 }
             </div>
