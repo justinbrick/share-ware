@@ -36,7 +36,7 @@ export default function ProfileBar(props: IProfileBarProps) {
             <p>
                 {!!user ? `You are signed in as ${user.displayName} (${user.userPrincipalName})` : "Please sign in"}
             </p>
-            <button onClick={clickAction} className="bg-white hover:bg-slate-300 rounded border-slate-500 border-2 p-2 flex flex-row">
+            <button onClick={clickAction} className="bg-gray-500 hover:bg-slate-300 rounded border-slate-500 border-2 p-2 flex flex-row">
                 {!!user ? "Sign Out" : "Sign In"}
                 <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Microsoft_icon.svg/512px-Microsoft_icon.svg.png" width={35} height={30} alt="Microsoft" className="pl-2" />
             </button>

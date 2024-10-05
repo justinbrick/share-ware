@@ -1,7 +1,7 @@
 import * as Graph from "@microsoft/microsoft-graph-types";
 import { useEffect, useState } from "react";
 import { getAuthFetch } from "./auth";
-import SiteStorageBreakdown from "./siteStorageBreakdown";
+import StorageBreakdown from "./storageBreakdown";
 import SiteStorageMetric from "./siteStorageMetric";
 
 export interface ISizeNavigatorProps {
@@ -17,7 +17,7 @@ export type SiteStatistic = {
   totalSize: number;
 };
 
-export default function SizeNavigator(props: ISizeNavigatorProps) {
+export default function SiteSizeNavigator(props: ISizeNavigatorProps) {
   const [siteStatistics, setSiteStatistics] = useState<SiteStatistic[]>([]);
   const [site, setSite] = useState<Graph.Site>();
 
@@ -99,7 +99,7 @@ export default function SizeNavigator(props: ISizeNavigatorProps) {
           />
         ))}
       </div>
-      <SiteStorageBreakdown site={site} />
+      <StorageBreakdown site={site} />
     </div>
   );
 }

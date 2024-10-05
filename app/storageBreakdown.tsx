@@ -10,9 +10,26 @@ export interface ISiteStorageBreakdownProps {
   site?: Graph.Site;
 }
 
-export default function SiteStorageBreakdown(
-  props: ISiteStorageBreakdownProps
-) {
+export type StorageBreakdownItem = {
+  /**
+   * a unique identifier for the item
+   */
+  id: string;
+  /**
+   * the name of the item
+   */
+  name: string;
+  /**
+   * the size of the item in bytes
+   */
+  size: number;
+  /**
+   * the url to the item
+   */
+  url?: string;
+};
+
+export default function StorageBreakdown(props: ISiteStorageBreakdownProps) {
   const { site } = props;
   const [lists, setLists] = useState<Graph.Drive[]>([]);
 
@@ -24,7 +41,7 @@ export default function SiteStorageBreakdown(
 
     const authFetch = getAuthFetch();
 
-    const getLists = async () => {
+    const updateLists = async () => {
       const response = await authFetch.fetch(
         `https://graph.microsoft.com/v1.0/sites/${site.id}/drives?$select=id,name,webUrl,quota`
       );
@@ -35,7 +52,7 @@ export default function SiteStorageBreakdown(
       );
     };
 
-    getLists();
+    updateLists();
   }, [site]);
 
   if (!site) {

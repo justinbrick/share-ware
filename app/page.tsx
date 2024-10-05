@@ -9,7 +9,7 @@ import {
   signOutUser,
 } from "./auth";
 import ProfileBar from "./profilebar";
-import SizeNavigator from "./sizeNavigator";
+import SiteSizeNavigator from "./siteSizeNavigator";
 
 export default function Home() {
   const [user, setUser] = useState<Graph.User>();
@@ -37,7 +37,7 @@ export default function Home() {
         signIn={redirectForAuthorization}
         signOut={signOut}
       />
-      <SizeNavigator user={user} />
+      <SiteSizeNavigator user={user} />
     </main>
   );
 }
