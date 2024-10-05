@@ -32,7 +32,7 @@ export default function ProfileBar(props: IProfileBarProps) {
     };
 
     return (
-        <div className="flex flex-row justify-between px-8 py-4 text-xl bg-slate-50 w-screen items-center">
+        <div className="flex flex-row justify-between px-8 py-4 text-xl bg-slate-400 w-screen items-center">
             <p>
                 {!!user ? `You are signed in as ${user.displayName} (${user.userPrincipalName})` : "Please sign in"}
             </p>
