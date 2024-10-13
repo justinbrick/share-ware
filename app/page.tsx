@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import * as Graph from "@microsoft/microsoft-graph-types";
-import { useEffect, useState } from "react";
+import * as Graph from '@microsoft/microsoft-graph-types';
+import { useEffect, useState } from 'react';
 import {
   getUserProfile,
   isAuthorized,
   redirectForAuthorization,
   signOutUser,
-} from "./auth";
-import ProfileBar from "./profilebar";
-import SiteSizeNavigator from "./siteSizeNavigator";
+} from './auth';
+import ProfileBar from './profileBar';
+import SiteSizeNavigator from './siteSizeNavigator';
 
 export default function Home() {
   const [user, setUser] = useState<Graph.User>();

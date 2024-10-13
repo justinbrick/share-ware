@@ -1,8 +1,8 @@
-import * as Graph from "@microsoft/microsoft-graph-types";
-import { useEffect, useState } from "react";
-import { getAuthFetch } from "./auth";
-import StorageBreakdown from "./storageBreakdown";
-import SiteStorageMetric from "./siteStorageMetric";
+import * as Graph from '@microsoft/microsoft-graph-types';
+import { useEffect, useState } from 'react';
+import { getAuthFetch } from './auth';
+import StorageBreakdown from './storageBreakdown';
+import SiteStorageMetric from './siteStorageMetric';
 
 export interface ISizeNavigatorProps {
   /**
@@ -29,10 +29,10 @@ export default function SiteSizeNavigator(props: ISizeNavigatorProps) {
     const getSites = async () => {
       const authFetch = getAuthFetch();
       const response = await authFetch.fetch(
-        "https://graph.microsoft.com/v1.0/sites?search=*"
+        'https://graph.microsoft.com/v1.0/sites?search=*'
       );
       const sites = (await response.json()).value as Graph.Site[];
-      const siteStatistics: Pick<SiteStatistic, "site" | "size">[] = [];
+      const siteStatistics: Pick<SiteStatistic, 'site' | 'size'>[] = [];
       let totalSize = 0;
       for (const site of sites) {
         try {
@@ -41,7 +41,7 @@ export default function SiteSizeNavigator(props: ISizeNavigatorProps) {
           );
           const drives = (await response.json()).value as Pick<
             Graph.Drive,
-            "quota"
+            'quota'
           >[];
           let localSize = 0;
           for (const drive of drives) {
