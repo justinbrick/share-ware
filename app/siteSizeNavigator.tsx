@@ -99,7 +99,10 @@ export default function SiteSizeNavigator(props: ISizeNavigatorProps) {
           />
         ))}
       </div>
-      <StorageBreakdown site={site} />
+      <StorageBreakdown
+        displayName={site?.displayName ?? undefined}
+        id={site?.id ?? ''}
+      />
     </div>
   );
 }
