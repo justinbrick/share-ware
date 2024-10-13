@@ -11,67 +11,7 @@ export interface ISizeNavigatorProps {
   user?: Graph.User;
 }
 
-export type SiteStatistic = {
-  site: Graph.Site;
-  size: number;
-  totalSize: number;
-};
-
 export default function SiteSizeNavigator(props: ISizeNavigatorProps) {
-  const [siteStatistics, setSiteStatistics] = useState<SiteStatistic[]>([]);
-  const [site, setSite] = useState<Graph.Site>();
-
-  useEffect(() => {
-    if (!props.user) {
-      return;
-    }
-
-    const getSites = async () => {
-      const authFetch = getAuthFetch();
-      const response = await authFetch.fetch(
-        'https://graph.microsoft.com/v1.0/sites?search=*'
-      );
-      const sites = (await response.json()).value as Graph.Site[];
-      const siteStatistics: Pick<SiteStatistic, 'site' | 'size'>[] = [];
-      let totalSize = 0;
-      for (const site of sites) {
-        try {
-          const response = await authFetch.fetch(
-            `https://graph.microsoft.com/v1.0/sites/${site.id}/drives?$select=quota`
-          );
-          const drives = (await response.json()).value as Pick<
-            Graph.Drive,
-            'quota'
-          >[];
-          let localSize = 0;
-          for (const drive of drives) {
-            totalSize += drive.quota?.used ?? 0;
-            localSize += drive.quota?.used ?? 0;
-          }
-          siteStatistics.push({ site, size: localSize });
-          setSiteStatistics(
-            siteStatistics
-              .sort((a, b) => b.size - a.size)
-              .map((siteStatistic) => {
-                return {
-                  site: siteStatistic.site,
-                  size: siteStatistic.size,
-                  totalSize,
-                };
-              })
-          );
-        } catch (error) {
-          console.error(
-            `Error while getting drives for ${site.displayName}`,
-            error
-          );
-        }
-      }
-    };
-
-    getSites();
-  }, [props.user]);
-
   if (!props.user) {
     return (
       <main className="flex flex-col items-center p-8">

@@ -1,5 +1,5 @@
 import * as Graph from '@microsoft/microsoft-graph-types';
-import { useEffect, useState } from 'react';
+import { CSSProperties, MouseEventHandler, useEffect, useState } from 'react';
 import { humanFileSize } from './util';
 
 export interface ISiteStorageBreakdownProps {
@@ -38,6 +38,10 @@ export type StorageBreakdownItem = {
    * the url to the item
    */
   url?: string;
+  /**
+   * the action on click of this
+   */
+  onClick?: MouseEventHandler;
 };
 
 export default function StorageBreakdown(props: ISiteStorageBreakdownProps) {
@@ -65,13 +69,30 @@ export default function StorageBreakdown(props: ISiteStorageBreakdownProps) {
     <div className="flex flex-col items-center w-full">
       {!!displayName && <h1 className="text-2xl p-8">{displayName}</h1>}
       <ul className="w-full bg-gray-50">
-        {lists.map((item) => (
-          <li key={item.id} className="shadow-sm hover:bg-gray-100">
-            <a href={item.url!} className="block w-full p-8">
-              {item.name} - {humanFileSize(item.size, false, 2)}
-            </a>
-          </li>
-        ))}
+        {lists.map((item) => {
+          let style: CSSProperties | undefined;
+          if (item.totalSize) {
+            const percent = (item.size / item.totalSize) * 100;
+            style = {
+              backgroundImage: `linear-gradient(to right, rgb(3 252 44 / var(--tw-bg-opacity)) 0%, rgb(3 252 44 / var(--tw-bg-opacity)) ${percent}%, transparent ${percent}%, transparent 100%)`,
+            };
+          }
+          return (
+            <li
+              style={style}
+              key={item.id}
+              className="shadow-sm hover:bg-gray-100"
+            >
+              <a
+                href={item.url}
+                className="block w-full p-8"
+                onClick={item.onClick}
+              >
+                {item.name} - {humanFileSize(item.size, false, 2)}
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

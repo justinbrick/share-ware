@@ -1,4 +1,13 @@
+import { useState } from 'react';
 import { humanFileSize } from './util';
+import * as Graph from '@microsoft/microsoft-graph-types';
+import { getAuthFetch } from './auth';
+
+export type SiteStatistic = {
+  site: Graph.Site;
+  size: number;
+  totalSize: number;
+};
 
 export interface ISiteStorageMetricProps {
   /**
@@ -9,10 +18,6 @@ export interface ISiteStorageMetricProps {
    * the size of the site in bytes
    */
   size: number;
-  /**
-   * the total size of all sites in bytes
-   */
-  totalSize: number;
   selected?: boolean;
   className?: string;
   onClick?: () => void;
@@ -24,17 +29,59 @@ export interface ISiteStorageMetricProps {
  * @returns site storage metric component
  */
 export default function SiteStorageMetric(props: ISiteStorageMetricProps) {
-  const { size, totalSize, siteName, selected, className, onClick } = props;
-  const percent = (size / totalSize) * 100;
+  const { size, siteName, selected, className, onClick } = props;
+  const [siteStatistics, setSiteStatistics] = useState<SiteStatistic[]>([]);
+  const [site, setSite] = useState<Graph.Site>();
   const color = selected ? 'bg-stone-50' : 'bg-stone-100';
+
+  const getSites = async () => {
+    const authFetch = getAuthFetch();
+    const response = await authFetch.fetch(
+      'https://graph.microsoft.com/v1.0/sites?search=*'
+    );
+    const sites = (await response.json()).value as Graph.Site[];
+    const siteStatistics: Pick<SiteStatistic, 'site' | 'size'>[] = [];
+    let totalSize = 0;
+    for (const site of sites) {
+      try {
+        const response = await authFetch.fetch(
+          `https://graph.microsoft.com/v1.0/sites/${site.id}/drives?$select=quota`
+        );
+        const drives = (await response.json()).value as Pick<
+          Graph.Drive,
+          'quota'
+        >[];
+        let localSize = 0;
+        for (const drive of drives) {
+          totalSize += drive.quota?.used ?? 0;
+          localSize += drive.quota?.used ?? 0;
+        }
+        siteStatistics.push({ site, size: localSize });
+        setSiteStatistics(
+          siteStatistics
+            .sort((a, b) => b.size - a.size)
+            .map((siteStatistic) => {
+              return {
+                site: siteStatistic.site,
+                size: siteStatistic.size,
+                totalSize,
+              };
+            })
+        );
+      } catch (error) {
+        console.error(
+          `Error while getting drives for ${site.displayName}`,
+          error
+        );
+      }
+    }
+  };
+
   return (
     <div
       className={`flex flex-row justify-between p-4 text-xl h-24 ${color} hover:bg-stone-50 w-full items-center bg-opacity-35 hover:bg-opacity-60 border-inherit border-y-2 ${
         className ?? ''
       }`}
-      style={{
-        backgroundImage: `linear-gradient(to right, rgb(3 252 44 / var(--tw-bg-opacity)) 0%, rgb(3 252 44 / var(--tw-bg-opacity)) ${percent}%, transparent ${percent}%, transparent 100%)`,
-      }}
       onClick={onClick}
     >
       <p className="text-sm w-1/2 text-wrap">{siteName}</p>
